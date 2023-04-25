@@ -1,0 +1,104 @@
+---
+title: "Delitos de Costa Rica"
+author: "Steven Chacon M"
+format: html
+lang: es
+---
+#Presentacion
+
+Este documento contiene daos estadistico sobre los [delitos cometidos](https://sitiooij.poder-judicial.go.cr/index.php/ayuda/servicios-policiales/servicios-a-organizaciones/indice-de-transparencia-del-sector-publico-costarricense/datos-abiertos) en Costa Rica en este año 
+
+#carga y muestra de los datos
+```{r}
+#| code-fold: true
+#| label: carga-muestra-datos
+delitos <- read.csv ("estadisticas2023.csv")
+
+# Tabla con las primeras 10 filas y columnas seleccionadas
+# Carga de los datos
+delitos_2022 <- read.csv("estadisticas2023.csv")
+
+# Tabla con las 10 primeras filas y con columnas seleccionadas
+knitr::kable(
+    head(
+        delitos_2022[, c("Delito", "SubDelito", "Fecha", "Victima", "Edad", "Provincia")], 
+        15
+    ),
+    caption = "Muestra de datos de delitos cometidos en 2022 en Costa Rica"
+)
+
+```
+# grafic de delitos pro provincia
+## Barras verticles
+```{r}
+# Crear tabla de frecuencias
+tabla_delitos <- table(delitos_2022$Provincia)
+
+# Ordenar descendentemente la tabla de frecuencia
+tabla_delitos_ordenada <- sort(tabla_delitos, decreasing = TRUE)
+
+# Gráfico de barras verticales
+barplot(
+    height = tabla_delitos_ordenada,
+    main = "Cantidad de delitos cometidos en 2022 por provincia", 
+    sub = "Fuente: OIJ",
+    col = "#15569f",
+    las = 2, # inclinación de las etiquetas (valor entre 0 y 3)
+    cex.names = 0.5,  # tamaño de las etiquetas
+    cex.axis = 0.7 # tamaño de los números en el eje 
+)
+```
+
+
+#grafico horizontal
+```{r}
+# Crear tabla de frecuencias
+tabla_delitos <- table(delitos_2022$Provincia)
+
+# Ordenar ascendentemente la tabla de frecuencia
+tabla_delitos_ordenada <- sort(tabla_delitos)
+
+# Gráfico de barras horizontales
+barplot(
+    height = tabla_delitos_ordenada,
+    main = "Cantidad de delitos cometidos en 2022 por provincia", 
+    sub = "Fuente: OIJ",
+    col = "#187a25",
+    las = 2,
+    cex.names = 0.5,
+    cex.axis = 0.7,
+    horiz = TRUE
+)
+```
+
+# Grafico pastel
+
+```{r}
+# Crear tabla de frecuencias
+tabla_delitos <- table(delitos_2022$Provincia)
+
+# Ordenar ascendentemente la tabla de frecuencia
+tabla_delitos_ordenada <- sort(tabla_delitos)
+
+# Gráfico de pastel
+pie(
+  tabla_delitos_ordenada,
+  main = "Cantidad de delitos cometidos en 2022 por provincia",
+  sub = "Fuente: OIJ",
+  col = rainbow(length(tabla_delitos_ordenada)),
+  cex = 0.8,
+  labels = paste0(
+    round(100 * tabla_delitos_ordenada / sum(tabla_delitos_ordenada), 1), 
+    "%"
+  )
+)
+# Agregar leyenda
+legend(
+  "topright",
+  legend = names(tabla_delitos_ordenada),
+  fill = rainbow(length(tabla_delitos_ordenada)),
+  cex = 0.8,
+  bty = "n" # quitar el marco de la leyenda, valor = ("n", "o")
+)
+```
+
